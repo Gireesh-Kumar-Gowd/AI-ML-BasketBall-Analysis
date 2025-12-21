@@ -12,17 +12,17 @@ class PlayerTracker:
         detections = []
         
         for i in range(0,len(frames),batch_size):
-            batch_frames = frames[i:batch_size]
+            batch_frames = frames[i:i+batch_size]
             batch_detections = self.model.predict(batch_frames,conf=0.5)
             detections+=batch_detections
         return detections
     
-    def get_object_tracks(self,frames):
+    def get_object_tracks(self, frames, read_from_stub=False, stub_path=None ):
         detections = self.detect_frames(frames)
         tracks=[]
         
         for frame_num,detection in enumerate(detections):
-            cls_names,_ = detection.names
+            cls_names = detection.names
             cls_names_inv = {v:k for k,v in cls_names.items()}
             
             detection_supervision = sv.Detections.from_ultralytics(detections)
