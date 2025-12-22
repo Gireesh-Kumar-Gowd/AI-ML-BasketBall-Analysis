@@ -1,5 +1,6 @@
 from utils import save_video, read_video
 from trackers import PlayerTracker
+from drawers import PlayerTracksDrawer
 
 def main():
     
@@ -15,7 +16,13 @@ def main():
                                               read_from_stub = True, 
                                               stub_path="stubs/player_track_stubs.pkl"
                                               )
-    print(player_tracks)
+    
+    #Draw output 
+    #Initialize Drawers
+    player_tracks_drawer = PlayerTracksDrawer()
+    
+    #Draw object Tracks
+    output_video_frames = player_tracks_drawer.draw(video_frames, player_tracks)
     
     #save video
     save_video(video_frames,"output_videos/output_video.avi")

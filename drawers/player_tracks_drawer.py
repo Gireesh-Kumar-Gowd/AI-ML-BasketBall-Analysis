@@ -1,3 +1,6 @@
+from .utils import draw_ellipse
+
+
 class PlayerTracksDrawer:
     
     def __init__(self):
@@ -9,12 +12,12 @@ class PlayerTracksDrawer:
         for frame_num , frame in enumerate(video_frames):
             
             frame  = frame.copy()
-            player_dict = video_frames[frame_num]
+            player_dict = tracks[frame_num]
             
             #draw player tracks
-            for track_id, player in player_dict.items():
-                
-                frame = draw_ellipse(frame,player['bbox'],(0,0,225))
-                output_video_frames.append(frame)
+            for track_id, player in player_dict.items():                
+                frame = draw_ellipse(frame,player['bbox'],(0,0,225),track_id)
+            
+            output_video_frames.append(frame)
                 
         return output_video_frames    
