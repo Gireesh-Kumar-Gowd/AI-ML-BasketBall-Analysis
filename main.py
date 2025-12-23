@@ -25,7 +25,7 @@ def main():
     output_video_frames = player_tracks_drawer.draw(video_frames, player_tracks)
     
     #save video
-    save_video(video_frames,"output_videos/output_video.avi")
+    save_video(output_video_frames,"output_videos/output_video.avi")
     
 if __name__ == "__main__":
     main()
