@@ -1,5 +1,5 @@
 from utils import save_video, read_video
-from trackers import PlayerTracker
+from trackers import PlayerTracker,BallTracker
 from drawers import PlayerTracksDrawer
 
 def main():
@@ -10,12 +10,17 @@ def main():
 
     #initialize tracker
     player_tracker = PlayerTracker("models/player_detector.pt")
+    ball_tracker = BallTracker("trackers/ball_tracker.py")
     
     #Run tracks
     player_tracks = player_tracker.get_object_tracks(video_frames, 
                                               read_from_stub = True, 
                                               stub_path="stubs/player_track_stubs.pkl"
                                               )
+    ball_tracks = ball_tracker.get_object_tracks(video_frames,                                                
+                                                 read_from_stub= True,
+                                                 stub_path="stubs/ball_track_stubs.pkl"
+                                                 )
     
     #Draw output 
     #Initialize Drawers
