@@ -6,20 +6,21 @@ from utils import get_bbox_width, get_center_of_bbox
 
 def draw_triangle(frame,bbox,color):
     y = int(bbox[1])
-    x,_ = get_center_of_bbox
+    x,_ = get_center_of_bbox(bbox)
     
     triangle_points = np.array([
         [x,y],
-        [x-10,y-10],
-        [x+20,y+20]
+        [x-10,y-20],
+        [x+10,y-20]
     ])
     cv2.drawContours(frame,[triangle_points],0,color,cv2.FILLED)
-    cv2.drawContours(frame,[triangle_points],0,color,2)
+    cv2.drawContours(frame,[triangle_points],0,(0,0,0),2)
     
+    return frame
 
 def draw_ellipse(frame , bbox, color, track_id=None):
     y2 = int(bbox[3])
-    x_center,_ = get_center_of_box(bbox)
+    x_center,_ = get_center_of_bbox(bbox)
     width = get_bbox_width(bbox)
     
     cv2.ellipse(

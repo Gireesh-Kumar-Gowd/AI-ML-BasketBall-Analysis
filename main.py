@@ -29,7 +29,7 @@ def main():
     
     #Draw object Tracks
     output_video_frames = player_tracks_drawer.draw(video_frames, player_tracks)
-    output_video_frames = player_tracks_drawer.draw(output_video_frames, ball_tracks)
+    output_video_frames = ball_tracks_drawer.draw(output_video_frames, ball_tracks)
 
     
     
