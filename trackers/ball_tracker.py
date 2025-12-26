@@ -55,3 +55,31 @@ class BallTracker:
                     
         save_stub(stub_path,tracks)                
         return tracks  
+    
+    def remove_wrong_detections(self,ball_positions):
+        
+        maximum_allowed_distance = 25
+        last_good_frame = -1
+        
+        for i in range(len(ball_positions)):
+            current_box = ball_positions[i].get(1, {}).get('bbox', [])
+
+            if len(current_box) == 0:
+                continue
+
+            if last_good_frame_index == -1:
+                # First valid detection
+                last_good_frame_index = i
+                continue
+
+            last_good_box = ball_positions[last_good_frame_index].get(1, {}).get('bbox', [])
+            frame_gap = i - last_good_frame_index
+            adjusted_max_distance = maximum_allowed_distance * frame_gap
+
+            if np.linalg.norm(np.array(last_good_box[:2]) - np.array(current_box[:2])) > adjusted_max_distance:
+                ball_positions[i] = {}
+            else:
+                last_good_frame_index = i
+
+        return ball_positions
+        
