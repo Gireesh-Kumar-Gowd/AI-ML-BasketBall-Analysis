@@ -21,6 +21,8 @@ def main():
                                                  read_from_stub= True,
                                                  stub_path="stubs/ball_track_stubs.pkl"
                                                  )
+    #Remove wrong ball detections
+    ball_tracks = ball_tracker.remove_wrong_detections(ball_tracks)
     
     #Draw output 
     #Initialize Drawers
