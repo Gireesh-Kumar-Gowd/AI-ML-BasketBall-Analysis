@@ -1,6 +1,9 @@
 from utils import save_video, read_video
 from trackers import PlayerTracker,BallTracker
 from drawers import PlayerTracksDrawer,BallTracksDrawer
+from team_assigner import TeamAssigner
+import os
+import argparse
 
 def main():
     
@@ -14,9 +17,9 @@ def main():
     
     #Run tracks
     player_tracks = player_tracker.get_object_tracks(video_frames, 
-                                              read_from_stub = True, 
-                                              stub_path="stubs/player_track_stubs.pkl"
-                                              )
+                                                    read_from_stub = True, 
+                                                    stub_path="stubs/player_track_stubs.pkl"
+                                                    )
     ball_tracks = ball_tracker.get_object_tracks(video_frames,                                                
                                                  read_from_stub= True,
                                                  stub_path="stubs/ball_track_stubs.pkl"
@@ -26,16 +29,26 @@ def main():
     #interpolate ball tracks
     ball_tracks = ball_tracker.interpolate_ball_positions(ball_tracks)
     
+    # Assign Player Teams
+    team_assigner = TeamAssigner()
+    player_assignment = team_assigner.get_player_teams_across_frames(video_frames,
+                                                                    player_tracks,
+                                                                    read_from_stub=True,
+                                                                    stub_path="stubs/player_assignment_stub.pkl"
+                                                                    )
+
     #Draw output 
     #Initialize Drawers
     player_tracks_drawer = PlayerTracksDrawer()
     ball_tracks_drawer = BallTracksDrawer()
     
     #Draw object Tracks
-    output_video_frames = player_tracks_drawer.draw(video_frames, player_tracks)
+    output_video_frames = player_tracks_drawer.draw(video_frames,
+                                                    player_tracks,
+                                                    player_assignment,
+                                                    )
     output_video_frames = ball_tracks_drawer.draw(output_video_frames, ball_tracks)
-
-    
+   
     
     #save video
     save_video(output_video_frames,"output_videos/output_video.avi")
