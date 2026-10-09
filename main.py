@@ -1,7 +1,8 @@
 from utils import save_video, read_video
 from trackers import PlayerTracker,BallTracker
-from drawers import PlayerTracksDrawer,BallTracksDrawer
+from drawers import PlayerTracksDrawer,BallTracksDrawer,TeamBallControlDrawer
 from team_assigner import TeamAssigner
+from ball_aquisition import BallAquisitionDetector
 import os
 import argparse
 
@@ -36,20 +37,28 @@ def main():
                                                                     read_from_stub=True,
                                                                     stub_path="stubs/player_assignment_stub.pkl"
                                                                     )
+    # Ball Acquisition
+    ball_acquisition_detector = BallAquisitionDetector()
+    ball_acquisition = ball_acquisition_detector.detect_ball_possession(player_tracks, ball_tracks)
 
     #Draw output 
     #Initialize Drawers
     player_tracks_drawer = PlayerTracksDrawer()
     ball_tracks_drawer = BallTracksDrawer()
+    team_ball_control_drawer = TeamBallControlDrawer()
     
     #Draw object Tracks
     output_video_frames = player_tracks_drawer.draw(video_frames,
                                                     player_tracks,
                                                     player_assignment,
+                                                    ball_acquisition,
                                                     )
     output_video_frames = ball_tracks_drawer.draw(output_video_frames, ball_tracks)
    
-    
+    # Draw Team Ball Control
+    output_video_frames = team_ball_control_drawer.draw(output_video_frames,
+                                                        player_assignment,
+                                                        ball_acquisition)
     #save video
     save_video(output_video_frames,"output_videos/output_video.avi")
     
