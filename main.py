@@ -5,12 +5,14 @@ from drawers import (PlayerTracksDrawer,
                      TeamBallControlDrawer,
                      PassInterceptionDrawer,
                      CourtKeypointDrawer,
-                     TacticalViewDrawer)
+                     TacticalViewDrawer,
+                     SpeedAndDistanceDrawer)
 from team_assigner import TeamAssigner
 from ball_aquisition import BallAquisitionDetector
 from pass_and_interception_detector import PassAndInterceptionDetector
 from court_keypoint_detector import CourtKeypointDetector
 from tactical_view_converter import TacticalViewConverter
+from speed_and_distance_calculator import SpeedAndDistanceCalculator
 import os
 import argparse
 
@@ -72,6 +74,16 @@ def main():
     court_keypoints_per_frame = tactical_view_converter.validate_keypoints(court_keypoints_per_frame)
     tactical_player_positions = tactical_view_converter.transform_players_to_tactical_view(court_keypoints_per_frame,player_tracks)
     
+    # Speed and Distance Calculator
+    speed_and_distance_calculator = SpeedAndDistanceCalculator(
+        tactical_view_converter.width,
+        tactical_view_converter.height,
+        tactical_view_converter.actual_width_in_meters,
+        tactical_view_converter.actual_height_in_meters
+    )
+    player_distances_per_frame = speed_and_distance_calculator.calculate_distance(tactical_player_positions)
+    player_speed_per_frame = speed_and_distance_calculator.calculate_speed(player_distances_per_frame)    
+
     #Draw output 
     #Initialize Drawers
     player_tracks_drawer = PlayerTracksDrawer()
@@ -80,6 +92,7 @@ def main():
     pass_interception_drawer = PassInterceptionDrawer()
     Court_keypoint_drawer = CourtKeypointDrawer()
     tactical_view_drawer = TacticalViewDrawer()
+    speed_and_distance_drawer = SpeedAndDistanceDrawer()
         
     #Draw object Tracks
     output_video_frames = player_tracks_drawer.draw(video_frames,
@@ -111,7 +124,14 @@ def main():
                                                     player_assignment,
                                                     ball_aquisition,
                                                     )
-    
+
+    # Speed and Distance Drawer
+    output_video_frames = speed_and_distance_drawer.draw(output_video_frames,
+                                                         player_tracks,
+                                                         player_distances_per_frame,
+                                                         player_speed_per_frame
+                                                         )
+
     #save video
     save_video(output_video_frames,"output_videos/output_video.avi")
     
